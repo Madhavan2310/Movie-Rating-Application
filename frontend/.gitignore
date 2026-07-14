@@ -1,0 +1,19 @@
+# Node dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Build folders
+dist/
+build/
+
+# VS Code
+.vscode/
+
+# IntelliJ
+.idea/
+
+# Java
+target/
+*.class
