@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MovieRecommendationApplication {
     public static void main(String[] args) {
-        SpringApplication.run(MovieRecommendationApplication.class, args);
+        var context = SpringApplication.run(MovieRecommendationApplication.class, args);
+        System.out.println("TMDB KEY LOADED >>> [" + context.getEnvironment().getProperty("tmdb.api.key") + "]");
     }
 }

@@ -33,6 +33,10 @@ public class MovieService {
         return movieRepository.save(existing);
     }
 
+    public boolean alreadyImportedFromTmdb(Integer tmdbId) {
+        return tmdbId != null && movieRepository.existsByTmdbId(tmdbId);
+    }
+
     public void deleteMovie(Integer id) {
         movieRepository.deleteById(id);
     }

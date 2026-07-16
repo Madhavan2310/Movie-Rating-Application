@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllMovies, addMovie, updateMovie, deleteMovie } from "../api/api";
+import { getAllMovies, addMovie, updateMovie, deleteMovie, importFromTmdb, importPopularFromTmdb } from "../api/api";
 import { useAuth } from "../context/AuthContext";
 
 const EMPTY_FORM = {
@@ -17,6 +17,9 @@ export default function AdminPanel() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState("");
+  const [tmdbTitle, setTmdbTitle] = useState("");
+  const [importing, setImporting] = useState(false);
+  const [bulkImporting, setBulkImporting] = useState(false);
 
   const load = async () => {
     const res = await getAllMovies();
@@ -65,8 +68,37 @@ export default function AdminPanel() {
     load();
   };
 
-  // Not a hard security boundary (that lives on the backend) -- just keeps
-  // the admin UI out of the way for regular visitors.
+  const handleBulkImport = async () => {
+    setBulkImporting(true);
+    setMessage("");
+    try {
+      const res = await importPopularFromTmdb(1);
+      setMessage(`Imported ${res.data.imported} new movies from TMDB (${res.data.skippedDuplicates} already existed).`);
+      load();
+    } catch (err) {
+      setMessage(err.response?.data?.error || "Bulk import failed.");
+    } finally {
+      setBulkImporting(false);
+    }
+  };
+
+  const handleImportFromTmdb = async (e) => {
+    e.preventDefault();
+    if (!tmdbTitle.trim()) return;
+    setImporting(true);
+    setMessage("");
+    try {
+      await importFromTmdb(tmdbTitle.trim());
+      setMessage(`Imported "${tmdbTitle}" from TMDB.`);
+      setTmdbTitle("");
+      load();
+    } catch (err) {
+      setMessage(err.response?.data?.error || "TMDB import failed.");
+    } finally {
+      setImporting(false);
+    }
+  };
+
   if (!user || user.role !== "ADMIN") {
     return (
       <p style={{ color: "var(--color-muted)" }}>
@@ -80,6 +112,53 @@ export default function AdminPanel() {
     <div>
       <h1>Admin Panel</h1>
       <p style={{ color: "var(--color-muted)" }}>Add or edit movies &amp; web series in the catalog.</p>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: "var(--color-secondary)",
+          padding: "16px 20px",
+          borderRadius: "var(--radius-md)",
+          border: "1px solid var(--color-border)",
+          marginBottom: "16px",
+        }}
+      >
+        <div>
+          <strong>Import Popular Movies from TMDB</strong>
+          <p style={{ margin: "4px 0 0", color: "var(--color-muted)", fontSize: "0.85rem" }}>
+            Pulls ~20 currently popular movies automatically -- no typing needed.
+            Safe to click more than once, duplicates are skipped.
+          </p>
+        </div>
+        <button onClick={handleBulkImport} disabled={bulkImporting} style={buttonStyle}>
+          {bulkImporting ? "Importing..." : "Import Popular Movies"}
+        </button>
+      </div>
+
+      <form
+        onSubmit={handleImportFromTmdb}
+        style={{
+          display: "flex",
+          gap: "8px",
+          backgroundColor: "var(--color-secondary)",
+          padding: "16px 20px",
+          borderRadius: "var(--radius-md)",
+          border: "1px solid var(--color-primary)",
+          marginBottom: "20px",
+        }}
+      >
+        <input
+          value={tmdbTitle}
+          onChange={(e) => setTmdbTitle(e.target.value)}
+          placeholder="Import from TMDB — type a title (e.g. Interstellar)"
+          style={{ ...inputStyle, flex: 1 }}
+        />
+        <button type="submit" disabled={importing} style={buttonStyle}>
+          {importing ? "Importing..." : "Import from TMDB"}
+        </button>
+      </form>
 
       <form onSubmit={handleSubmit} style={formStyle}>
         <input name="title" placeholder="Title" value={form.title} onChange={handleChange} required style={inputStyle} />

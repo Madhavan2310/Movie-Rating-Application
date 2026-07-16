@@ -40,3 +40,9 @@ export const getReviewsForMovie = (movieId) => api.get(`/reviews/movie/${movieId
 export const addToWatchlist = (userId, movieId) => api.post(`/watchlist/${userId}/${movieId}`);
 export const removeFromWatchlist = (userId, movieId) => api.delete(`/watchlist/${userId}/${movieId}`);
 export const getWatchlist = (userId) => api.get(`/watchlist/${userId}`);
+
+
+export const importFromTmdb = (title) =>
+  api.post("/tmdb/import", null, { params: { title } });
+export const importPopularFromTmdb = (pages = 1) =>
+  api.post("/tmdb/import-popular", null, { params: { pages } });
