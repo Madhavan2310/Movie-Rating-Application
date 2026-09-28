@@ -23,25 +23,16 @@ public class TmdbService {
         this.tmdbConfig = tmdbConfig;
     }
 
-//    public boolean isConfigured() {
-//        return tmdbConfig.getApiKey() != null
-//                && !tmdbConfig.getApiKey().isBlank()
-//                && !tmdbConfig.getApiKey().equals("8b1a57c7f649f6e578f0de46c33d68a6");
-//    }
 
-//    public boolean isConfigured() {
-//        System.out.println("TMDB CONFIG CHECK >>> [" + tmdbConfig.getApiKey() + "]");
-//        return tmdbConfig.getApiKey() != null
-//                && !tmdbConfig.getApiKey().isBlank()
-//                && !tmdbConfig.getApiKey().equals("8b1a57c7f649f6e578f0de46c33d68a6");
-//    }
+
+
 
     public boolean isConfigured() {
         String key = tmdbConfig.getApiKey();
         System.out.println("TMDB CONFIG CHECK >>> [" + key + "] LENGTH=" + (key == null ? "null" : key.length()));
         return key != null
                 && !key.isBlank()
-                && key.equals("260310be5c7a0cc295a16e74daac650d");
+                && !key.equals("YOUR_TMDB_API_KEY_HERE");
     }
 
     private void requireConfigured() {

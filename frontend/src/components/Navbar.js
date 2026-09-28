@@ -28,7 +28,7 @@ export default function Navbar() {
       <Link to="/" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <span style={{ fontSize: "1.5rem" }}>🎬</span>
         <span style={{ fontWeight: 700, fontSize: "1.25rem", color: "var(--color-primary)" }}>
-          CineRate
+          Binge
         </span>
       </Link>
 
