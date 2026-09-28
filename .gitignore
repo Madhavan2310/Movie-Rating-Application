@@ -5,7 +5,7 @@ target/
 # Node
 node_modules/
 
-# IntelliJ
+# IntelliJ IDEA
 .idea/
 *.iml
 
